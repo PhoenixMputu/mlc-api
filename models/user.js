@@ -5,15 +5,21 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
   {
-    pseudo: {
+    name: {
       type: String,
       required: true,
-      unique: true,
     },
-    password: String,
-    avatar: {
+    firstName: {
       type: String,
-      default: "",
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
     },
   },
   {
@@ -21,6 +27,4 @@ const userSchema = new Schema(
   }
 );
 
-const User = database.model("User", userSchema);
-
-module.exports = User;
+exports.User = database.model("User", userSchema);
