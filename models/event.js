@@ -3,22 +3,29 @@ const database = require("../services/mongoose");
 
 const { Schema } = mongoose;
 
-const userSchema = new Schema(
+const eventSchema = new Schema(
   {
     name: {
       type: String,
       required: true,
     },
-    firstName: {
+    lieu: {
       type: String,
       required: true,
     },
-    email: {
+    image: {
       type: String,
       required: true,
-      unique: true,
     },
-    password: {
+    date: {
+      type: Date,
+      required: true,
+    },
+    hour: {
+      type: String,
+      required: true,
+    },
+    description: {
       type: String,
       required: true,
     },
@@ -28,4 +35,4 @@ const userSchema = new Schema(
   }
 );
 
-exports.User = database.model("User", userSchema);
+exports.Event = database.model("Event", eventSchema);

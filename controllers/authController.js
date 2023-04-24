@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const { User } = require("../models/user");
 const bcrypt = require("../services/bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -40,9 +40,56 @@ module.exports.login = async (request, response) => {
     message: "Utilisateur est connecté !",
     user: {
       id: foundUser._id,
-      pseudo: foundUser.pseudo,
-      avatar: foundUser.avatar,
+      name: foundUser.name,
+      firstName: foundUser.firstName,
+      email: foundUser.email,
       token: `Bearer ${token}`,
     },
   });
 };
+
+module.exports.register = async (request, response) => {
+    const { name, password, email, firstName } = request.body;
+    if (!name || !password || !email || !firstName) {
+      return response.status(415).json({
+        type: "Erreur",
+        message: "Tous les données",
+      });
+    }
+    const existsEmail = await User.findOne({ email: email });
+    if (existsEmail) {
+      return response.status(415).json({
+        type: "Erreur",
+        message: "l'email existe déjà",
+      });
+    }
+  
+    const cryptedPassword = await bcrypt.encrypt(password);
+    const user = await User.create({
+      name: name,
+      password: cryptedPassword,
+      firstName: firstName,
+      email: email,
+    });
+  
+    if (user) {
+      const payload = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        firstName: user.firstName,
+      };
+      const token = jsonwebtoken.sign(payload, secret, { expiresIn: "1d" });
+      return response.status(201).json({
+        type: "Success",
+        message: "Successfull",
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            firstName: user.firstName,
+            token: `Bearer ${token}`,
+        },
+      });
+    }
+  };
