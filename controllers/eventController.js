@@ -23,6 +23,7 @@ module.exports.create = async (request, response) => {
     .then(() => {
       return response.status(201).json({
         message: "Event crée",
+        type: "Successfully"
       });
     })
     .catch((error) => {
